@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sports Talent — Demo</title>
+  <style>
+    :root{
+      --accent:#3b82f6;
+      --muted:#6b7280;
+      --bg:#f3f4f6;
+      --card:#ffffff;
+      --glass: rgba(255,255,255,0.6);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,var(--bg),#eef2ff);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .container{width:100%;max-width:980px;background:var(--card);border-radius:14px;padding:22px;box-shadow:0 8px 30px rgba(15,23,42,0.08);display:grid;grid-template-columns:360px 1fr;gap:20px}
+
+    /* Left: Auth */
+    .panel{background:linear-gradient(180deg,rgba(59,130,246,0.06),transparent);padding:18px;border-radius:12px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:48px;height:48px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+    h1{margin:10px 0 2px;font-size:18px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    .tabs{display:flex;gap:10px;margin-top:16px}
+    .tab{flex:1;padding:8px 10px;background:transparent;border-radius:8px;text-align:center;cursor:pointer}
+    .tab.active{background:var(--accent);color:#fff}
+
+    form{margin-top:14px}
+    .field{margin-bottom:12px}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    input[type=text],input[type=password],input[type=tel],input[type=date],select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ef;background:#fff}
+    .small{font-size:12px;color:var(--muted)}
+    .row{display:flex;gap:10px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid #e6e9ef;color:var(--muted)}
+
+    /* Right: Dashboard */
+    .dashboard{padding:18px;border-radius:12px;background:linear-gradient(180deg,var(--glass),transparent)}
+    .dash-top{display:flex;align-items:center;justify-content:space-between}
+    .settings-btn{display:flex;gap:10px;align-items:center}
+    .settings-btn button{padding:8px;border-radius:8px;border:1px solid #e6e9ef;background:#fff;cursor:pointer}
+    .profile{display:flex;gap:12px;align-items:center}
+    .avatar{width:44px;height:44px;border-radius:10px;background:#fde68a;display:flex;align-items:center;justify-content:center;font-weight:700}
+
+    .sports-list{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+    .sport{padding:10px;border-radius:10px;border:1px solid #e6e9ef;background:#fff;display:flex;align-items:center;gap:8px}
+
+    .settings-panel{position:fixed;right:18px;top:18px;width:320px;padding:14px;background:var(--card);border-radius:12px;box-shadow:0 10px 40px rgba(2,6,23,0.12);display:none}
+    .settings-panel.open{display:block}
+    .settings-panel h3{margin:0 0 10px}
+    .toggle{display:flex;align-items:center;gap:8px}
+
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+
+    /* Responsive */
+    @media (max-width:880px){
+      .container{grid-template-columns:1fr;}
+      .panel{order:2}
+      .dashboard{order:1}
+    }
+
+    .error{color:#dc2626;font-size:12px;margin-top:6px}
+    .success{color:#0f172a;font-size:13px;margin-top:6px}
+  </style>
+</head>
+<body>
+  <div class="container" role="application">
+    <div class="panel" aria-labelledby="authTitle">
+      <div class="brand">
+        <div class="logo">ST</div>
+        <div>
+          <h1 id="authTitle">Sports Talent — Demo</h1>
+          <p class="lead">Login or create an account to start assessing talent.</p>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <div class="tab active" id="tab-login" role="tab" tabindex="0">Login</div>
+        <div class="tab" id="tab-signup" role="tab" tabindex="0">Sign up</div>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="loginMobile">Mobile number</label>
+          <input id="loginMobile" type="tel" placeholder="e.g. 9876543210" required />
+        </div>
+        <div class="field">
+          <label for="loginPass">Password</label>
+          <input id="loginPass" type="password" placeholder="Your password" required />
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;justify-content:space-between">
+          <button type="submit" class="btn">Login</button>
+          <button type="button" id="forgot" class="btn ghost">Forgot?</button>
+        </div>
+        <div id="loginMsg" class="small"></div>
+      </form>
+
+      <!-- Signup Form -->
+      <form id="signupForm" style="display:none;margin-top:6px;" novalidate>
+        <div class="field row">
+          <div style="flex:1">
+            <label for="firstName">First name</label>
+            <input id="firstName" type="text" placeholder="First" />
+          </div>
+          <div style="flex:1">
+            <label for="lastName">Last name</label>
+            <input id="lastName" type="text" placeholder="Last" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="signupMobile">Mobile number</label>
+          <input id="signupMobile" type="tel" placeholder="10-digit mobile" />
+        </div>
+        <div class="field">
+          <label for="dob">Date of birth</label>
+          <input id="dob" type="date" />
+        </div>
+        <div class="field">
+          <label>Choose sports you play / assess</label>
+          <div class="sports-list" aria-label="sports choices">
+            <label class="sport"><input type="checkbox" value="Kabaddi" /> Kabaddi</label>
+            <label class="sport"><input type="checkbox" value="Kho-Kho" /> Kho-Kho</label>
+            <label class="sport"><input type="checkbox" value="Volleyball" /> Volleyball</label>
+            <label class="sport"><input type="checkbox" value="Badminton" /> Badminton</label>
+            <label class="sport"><input type="checkbox" value="Cricket" /> Cricket</label>
+            <label class="sport"><input type="checkbox" value="Football" /> Football</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="signupPass">Create password</label>
+          <input id="signupPass" type="password" />
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;justify-content:space-between">
+          <button type="submit" class="btn">Sign up</button>
+          <button type="button" id="clearBtn" class="btn ghost">Clear</button>
+        </div>
+        <div id="signupMsg" class="small"></div>
+      </form>
+
+    </div>
+
+    <div class="dashboard" aria-live="polite">
+      <div class="dash-top">
+        <div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="profile">
+              <div class="avatar">MS</div>
+              <div>
+                <div style="font-weight:600">Welcome, Guest</div>
+                <div class="small">Assess sports talent quickly</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="settings-btn">
+          <button id="settingsToggle" title="Settings">⚙️ Settings</button>
+        </div>
+      </div>
+
+      <h2 style="margin-top:18px;margin-bottom:6px">Popular sports</h2>
+      <p class="small">Quick links to common sports you asked for.</p>
+
+      <div class="sports-list" style="margin-top:12px">
+        <div class="sport">🏏 Cricket</div>
+        <div class="sport">🏐 Volleyball</div>
+        <div class="sport">🏸 Badminton</div>
+        <div class="sport">🤼 Kabaddi</div>
+        <div class="sport">⚽ Football</div>
+        <div class="sport">🏃‍♂️ Athletics</div>
+      </div>
+
+      <section style="margin-top:18px">
+        <h3>Quick signup preview</h3>
+        <p class="small">Use the Sign up tab to register. Fields include DOB and Mobile number.</p>
+        <div id="preview" class="success">No signup yet.</div>
+      </section>
+
+      <footer>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>© Sports Talent Demo</div>
+          <div class="small">Made for prototyping</div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Settings panel -->
+  <aside class="settings-panel" id="settingsPanel" aria-hidden="true">
+    <h3>Settings</h3>
+    <div style="margin-bottom:12px">
+      <label class="small">Notification</label>
+      <div class="toggle"><input id="notif" type="checkbox" /> <label for="notif" class="small">Enable push notifications</label></div>
+    </div>
+    <div style="margin-bottom:12px">
+      <label class="small">Dark mode</label>
+      <div class="toggle"><input id="dark" type="checkbox" /> <label for="dark" class="small">Use dark theme</label></div>
+    </div>
+    <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
+      <button id="saveSettings" class="btn">Save</button>
+      <button id="closeSettings" class="btn ghost">Close</button>
+    </div>
+  </aside>
+
+  <script>
+    // Tab switching
+    const tabLogin = document.getElementById('tab-login');
+    const tabSign = document.getElementById('tab-signup');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const signupMsg = document.getElementById('signupMsg');
+    const loginMsg = document.getElementById('loginMsg');
+    const preview = document.getElementById('preview');
+
+    function showLogin(){
+      tabLogin.classList.add('active');
+      tabSign.classList.remove('active');
+      loginForm.style.display = '';
+      signupForm.style.display = 'none';
+    }
+    function showSignup(){
+      tabSign.classList.add('active');
+      tabLogin.classList.remove('active');
+      signupForm.style.display = '';
+      loginForm.style.display = 'none';
+    }
+
+    tabLogin.addEventListener('click', showLogin);
+    tabSign.addEventListener('click', showSignup);
+
+    // Simple validation helpers
+    function validMobile(v){
+      return /^\d{10}$/.test(v.trim());
+    }
+
+    // Login submit
+    loginForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const m = document.getElementById('loginMobile').value;
+      const p = document.getElementById('loginPass').value;
+      loginMsg.textContent = '';
+      if(!validMobile(m)) { loginMsg.textContent = 'Enter a valid 10-digit mobile number.'; loginMsg.className='error'; return }
+      if(p.length < 4) { loginMsg.textContent = 'Password too short.'; loginMsg.className='error'; return }
+      loginMsg.textContent = 'Logged in (demo) — welcome!'; loginMsg.className='success';
+    });
+
+    // Signup submit
+    signupForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      signupMsg.textContent = '';
+      const mob = document.getElementById('signupMobile').value;
+      const dob = document.getElementById('dob').value;
+      const pass = document.getElementById('signupPass').value;
+      const fname = document.getElementById('firstName').value;
+      const lname = document.getElementById('lastName').value;
+      const checkboxes = Array.from(document.querySelectorAll('#signupForm input[type=checkbox]:checked')).map(n=>n.value);
+
+      if(!validMobile(mob)) { signupMsg.textContent = 'Please enter a valid 10-digit mobile number.'; signupMsg.className='error'; return }
+      if(!dob){ signupMsg.textContent = 'Please provide your date of birth.'; signupMsg.className='error'; return }
+      if(pass.length < 6){ signupMsg.textContent = 'Password should be at least 6 characters.'; signupMsg.className='error'; return }
+
+      signupMsg.textContent = 'Signup complete (demo).'; signupMsg.className='success';
+      preview.textContent = `Signed up: ${fname || ''} ${lname || ''} — DOB: ${dob} — Mobile: ${mob} — Sports: ${checkboxes.join(', ') || 'None'}`;
+    });
+
+    // Clear
+    document.getElementById('clearBtn').addEventListener('click', ()=>{
+      signupForm.reset(); signupMsg.textContent=''; preview.textContent='No signup yet.';
+    });
+
+    // Settings toggle
+    const settingsToggle = document.getElementById('settingsToggle');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const closeSettings = document.getElementById('closeSettings');
+    const saveSettings = document.getElementById('saveSettings');
+
+    settingsToggle.addEventListener('click', ()=>{
+      settingsPanel.classList.toggle('open');
+      settingsPanel.setAttribute('aria-hidden', settingsPanel.classList.contains('open') ? 'false' : 'true');
+    });
+    closeSettings.addEventListener('click', ()=>{ settingsPanel.classList.remove('open'); settingsPanel.setAttribute('aria-hidden','true'); });
+    saveSettings.addEventListener('click', ()=>{ alert('Settings saved (demo)'); settingsPanel.classList.remove('open'); });
+
+    // small UX: keyboard tab switch
+    tabLogin.addEventListener('keydown', (e)=>{ if(e.key==='Enter') showLogin() });
+    tabSign.addEventListener('keydown', (e)=>{ if(e.key==='Enter') showSignup() });
+
+    // Accessibility: prevent form submission on Enter inside signup sports checkboxes
+    document.querySelectorAll('.sports-list input').forEach(cb=>cb.addEventListener('keydown', e=>{ if(e.key==='Enter') e.preventDefault(); }));
+  </script>
+</body>
+</html>
