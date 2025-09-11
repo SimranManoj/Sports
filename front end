@@ -1,0 +1,42 @@
+// Login submit
+loginForm.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const m = document.getElementById('loginMobile').value.trim();
+  const p = document.getElementById('loginPass').value.trim();
+  loginMsg.textContent = '';
+
+  // Validation
+  if(!validMobile(m)) { 
+    loginMsg.textContent = 'Enter a valid 10-digit mobile number.'; 
+    loginMsg.className='error'; 
+    return; 
+  }
+  if(p.length < 4) { 
+    loginMsg.textContent = 'Password too short.'; 
+    loginMsg.className='error'; 
+    return; 
+  }
+
+  // Send to backend API (dummy here)
+  try {
+    const res = await fetch("http://localhost:5000/login", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({ mobile:m, password:p })
+    });
+    const data = await res.json();
+
+    if(data.success){
+      loginMsg.textContent = "Login successful! Redirecting...";
+      loginMsg.className='success';
+      // Example redirect (after 1 sec)
+      setTimeout(()=> window.location.href="/dashboard.html", 1000);
+    } else {
+      loginMsg.textContent = data.message || "Invalid credentials.";
+      loginMsg.className='error';
+    }
+  } catch(err){
+    loginMsg.textContent = "Server error. Please try again.";
+    loginMsg.className='error';
+  }
+});
