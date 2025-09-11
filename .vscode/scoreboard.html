@@ -1,55 +1,118 @@
-<input type="file" id="videoUpload" accept="video/mp4" onchange="handleVideoUpload()">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Talent Scoreboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #2563eb;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 60%;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background: #2563eb;
+      color: white;
+    }
+    .video-box {
+      margin-top: 20px;
+    }
+    video {
+      width: 500px;
+      max-width: 90%;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .highlight {
+      font-size: 18px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏆 Sports Talent Scoreboard</h1>
 
-<table border="1">
-  <thead>
-    <tr>
-      <th>Sport</th>
-      <th>Score</th>
-    </tr>
-  </thead>
-  <tbody id="scoreTableBody"></tbody>
-</table>
+  <h3>Upload Your Game Video</h3>
+  <input type="file" id="videoUpload" accept="video/mp4" onchange="handleVideoUpload()">
 
-<div id="videoPlayer"></div>
+  <table>
+    <thead>
+      <tr>
+        <th>Sport</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody id="scoreTableBody"></tbody>
+  </table>
 
-<script>
-  const scores = {
-    "Kabaddi": 85,
-    "Kho-Kho": 70,
-    "Cricket": 95,
-    "Volleyball": 78,
-    "Badminton": 88,
-    "Football": 90
-  };
+  <div class="video-box" id="videoBox"></div>
 
-  function handleVideoUpload() {
-    const fileInput = document.getElementById("videoUpload");
-    const file = fileInput.files[0];
-    const tbody = document.getElementById("scoreTableBody");
-    const videoPlayer = document.getElementById("videoPlayer");
+  <script>
+    // Sports and their scores
+    const scores = {
+      "Kabaddi": 85,
+      "Kho-Kho": 70,
+      "Cricket": 95,
+      "Volleyball": 78,
+      "Badminton": 88,
+      "Football": 90
+    };
 
-    tbody.innerHTML = "";
-    videoPlayer.innerHTML = "";
+    function handleVideoUpload() {
+      const fileInput = document.getElementById("videoUpload");
+      const file = fileInput.files[0];
+      const tbody = document.getElementById("scoreTableBody");
+      const videoBox = document.getElementById("videoBox");
 
-    if (file) {
-      let fileName = file.name.split(".")[0]; // take name without extension
-      let sportName = fileName.charAt(0).toUpperCase() + fileName.slice(1).toLowerCase(); 
+      tbody.innerHTML = "";
+      videoBox.innerHTML = "";
 
-      if (scores[sportName]) {
-        // show only that sport score
-        tbody.innerHTML = `<tr><td>${sportName}</td><td>${scores[sportName]}</td></tr>`;
+      if (file) {
+        // Get file name without extension
+        let fileName = file.name.split(".")[0].toLowerCase();
 
-        // play uploaded video
-        const url = URL.createObjectURL(file);
-        videoPlayer.innerHTML = `
-          <video width="400" controls autoplay>
-            <source src="${url}" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-        `;
-      } else {
-        tbody.innerHTML = `<tr><td colspan="2">No score found for "${fileName}"</td></tr>`;
+        let found = false;
+        for (let sport in scores) {
+          if (sport.toLowerCase() === fileName) {
+            // Show only that sport's score
+            tbody.innerHTML = `<tr><td>${sport}</td><td>${scores[sport]}</td></tr>`;
+
+            // Play uploaded video
+            const url = URL.createObjectURL(file);
+            videoBox.innerHTML = `
+              <video width="400" controls autoplay>
+                <source src="${url}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            `;
+
+            found = true;
+            break;
+          }
+        }
+
+        if (!found) {
+          tbody.innerHTML = `<tr><td colspan="2">No score found for "${fileName}"</td></tr>`;
+        }
       }
     }
-  }
-</script>
+  </script>
+</body>
+</html>
