@@ -1,116 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sports Talent Scoreboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f3f4f6;
-      padding: 20px;
-      text-align: center;
-    }
-    h1 {
-      color: #2563eb;
-    }
-    table {
-      margin: 20px auto;
-      border-collapse: collapse;
-      width: 60%;
-      background: white;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 12px;
-      text-align: center;
-    }
-    th {
-      background: #2563eb;
-      color: white;
-    }
-    .video-box {
-      margin-top: 20px;
-    }
-    video {
-      width: 500px;
-      max-width: 90%;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    .highlight {
-      font-size: 18px;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-  <h1>🏆 Sports Talent Scoreboard</h1>
+<input type="file" id="videoUpload" accept="video/mp4" onchange="handleVideoUpload()">
 
-  <table>
+<table border="1">
+  <thead>
     <tr>
       <th>Sport</th>
       <th>Score</th>
     </tr>
-    <tr><td>Kabaddi</td><td>85</td></tr>
-    <tr><td>Kho-Kho</td><td>70</td></tr>
-    <tr><td>Cricket</td><td>95</td></tr>
-    <tr><td>Volleyball</td><td>78</td></tr>
-    <tr><td>Badminton</td><td>88</td></tr>
-    <tr><td>Football</td><td>90</td></tr>
-  </table>
+  </thead>
+  <tbody id="scoreTableBody"></tbody>
+</table>
 
-  <div class="video-box" id="videoBox">
-    <h2>🎥 Your Hobby Video</h2>
-    <video id="sportVideo" controls autoplay></video>
-    <div class="highlight" id="resultText"></div>
-  </div>
+<div id="videoPlayer"></div>
 
-  <script>
-    // Example: user hobby
-    let hobby = "Badminton";   // ← This can come from your login/signup form
+<script>
+  const scores = {
+    "Kabaddi": 85,
+    "Kho-Kho": 70,
+    "Cricket": 95,
+    "Volleyball": 78,
+    "Badminton": 88,
+    "Football": 90
+  };
 
-    const scores = {
-      "Kabaddi": 85,
-      "Kho-Kho": 70,
-      "Cricket": 95,
-      "Volleyball": 78,
-      "Badminton": 88,
-      "Football": 90
-    };
+  function handleVideoUpload() {
+    const fileInput = document.getElementById("videoUpload");
+    const file = fileInput.files[0];
+    const tbody = document.getElementById("scoreTableBody");
+    const videoPlayer = document.getElementById("videoPlayer");
 
-    const videos = {
-      "Kabaddi": "kabaddi.mp4",
-      "Kho-Kho": "khokho.mp4",
-      "Cricket": "cricket.mp4",
-      "Volleyball": "volleyball.mp4",
-      "Badminton": "badminton.mp4",  // 👈 your uploaded file
-      "Football": "football.mp4"
-    };
+    tbody.innerHTML = "";
+    videoPlayer.innerHTML = "";
 
-    // Show only selected hobby
-    document.querySelectorAll("table tr").forEach((row, idx) => {
-      if (idx !== 0) { // skip header
-        if (!row.cells[0].innerText.includes(hobby)) {
-          row.style.display = "none";
-        }
+    if (file) {
+      let fileName = file.name.split(".")[0]; // take name without extension
+      let sportName = fileName.charAt(0).toUpperCase() + fileName.slice(1).toLowerCase(); 
+
+      if (scores[sportName]) {
+        // show only that sport score
+        tbody.innerHTML = `<tr><td>${sportName}</td><td>${scores[sportName]}</td></tr>`;
+
+        // play uploaded video
+        const url = URL.createObjectURL(file);
+        videoPlayer.innerHTML = `
+          <video width="400" controls autoplay>
+            <source src="${url}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        `;
+      } else {
+        tbody.innerHTML = `<tr><td colspan="2">No score found for "${fileName}"</td></tr>`;
       }
-    });
-
-    // Set video
-    const videoEl = document.getElementById("sportVideo");
-    videoEl.src = videos[hobby];
-
-    // Score feedback
-    const score = scores[hobby];
-    const resultText = document.getElementById("resultText");
-
-    if (score >= 90) resultText.innerText = "🔥 Excellent!";
-    else if (score >= 80) resultText.innerText = "✨ Awesome!";
-    else if (score >= 70) resultText.innerText = "👍 Good!";
-    else resultText.innerText = "😔 Loss, try again!";
-  </script>
-</body>
-</html>
+    }
+  }
+</script>
