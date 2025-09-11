@@ -1,159 +1,116 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sports Talent Scoreboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(180deg,#f3f4f6,#eef2ff);
-      margin: 0;
-      padding: 20px;
-    }
-    h1 { text-align: center; color: #3b82f6; }
-    .games { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 20px; margin-top: 20px; }
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    video { width: 100%; border-radius: 10px; }
-    .score { font-weight: bold; margin-top: 6px; }
-    .remark { margin-top: 4px; color: #0f172a; }
-    button {
-      display: block;
-      margin: 20px auto;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 10px;
-      background: #3b82f6;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-  <h1>Sports Talent Scoreboard</h1>
-  <button onclick="generateScores()">🎯 Generate Scores</button>
-  <div class="games" id="games"></div>
-
-  <script>
-    const sports = [
-      {name: "Football", file: "football.mp4"},
-      {name: "Cricket", file: "cricket.mp4"},
-      {name: "Running", file: "running.mp4"},
-      {name: "Basketball", file: "basketball.mp4"},
-      {name: "Badminton", file: "badminton.mp4"},
-      {name: "Kabaddi", file: "kabaddi.mp4"},
-      {name: "Kho-Kho", file: "khokho.mp4"}
-    ];
-
-    function generateScores(){
-      const container = document.getElementById("games");
-      container.innerHTML = "";
-      sports.forEach(sport=>{
-        const score = Math.floor(Math.random()*101); // 0-100
-        let remark = "";
-        if(score>90) remark="🌟 Perfect!";
-        else if(score>75) remark="🔥 Awesome!";
-        else if(score>60) remark="💯 Excellent!";
-        else if(score>45) remark="👍 Good";
-        else remark="❌ Loss";
-
-        const card = document.createElement("div");
-        card.className="card";
-        card.innerHTML=`
-          <h3>${sport.name}</h3>
-          <video src="${sport.file}" controls></video>
-          <div class="score">Score: ${score}</div>
-          <div class="remark">${remark}</div>
-        `;
-        container.appendChild(card);
-      });
-    }
-  </script>
-</body>
-</html>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Scoreboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Talent Scoreboard</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f2f5;
+      background: #f3f4f6;
       padding: 20px;
-    }
-    h1 { text-align: center; }
-    .card { 
-      border: 1px solid #ddd; 
-      padding: 15px; 
-      margin: 15px auto; 
-      border-radius: 10px; 
-      background: #fff;
-      width: 350px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       text-align: center;
     }
-    .score { font-size: 20px; font-weight: bold; margin-top: 10px; }
-    .remark { font-size: 18px; margin-top: 5px; font-weight: bold; }
+    h1 {
+      color: #2563eb;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 60%;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background: #2563eb;
+      color: white;
+    }
+    .video-box {
+      margin-top: 20px;
+    }
+    video {
+      width: 500px;
+      max-width: 90%;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .highlight {
+      font-size: 18px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <h1>Sports Talent App</h1>
+  <h1>🏆 Sports Talent Scoreboard</h1>
 
-  <!-- Hobby input -->
-  <label for="hobby">Enter your Hobby:</label>
-  <input type="text" id="hobby" placeholder="e.g. football">
-  <button onclick="generateScores()">Show Score</button>
+  <table>
+    <tr>
+      <th>Sport</th>
+      <th>Score</th>
+    </tr>
+    <tr><td>Kabaddi</td><td>85</td></tr>
+    <tr><td>Kho-Kho</td><td>70</td></tr>
+    <tr><td>Cricket</td><td>95</td></tr>
+    <tr><td>Volleyball</td><td>78</td></tr>
+    <tr><td>Badminton</td><td>88</td></tr>
+    <tr><td>Football</td><td>90</td></tr>
+  </table>
 
-  <!-- Output -->
-  <div id="games"></div>
+  <div class="video-box" id="videoBox">
+    <h2>🎥 Your Hobby Video</h2>
+    <video id="sportVideo" controls autoplay></video>
+    <div class="highlight" id="resultText"></div>
+  </div>
 
   <script>
-    const sports = [
-      { name: "Football", file: "football.mp4" },
-      { name: "Cricket", file: "cricket.mp4" },
-      { name: "Volleyball", file: "volleyball.mp4" },
-      { name: "Basketball", file: "basketball.mp4" },
-      { name: "Kabaddi", file: "kabaddi.mp4" },
-      { name: "Kho-Kho", file: "khokho.mp4" },
-      { name: "Badminton", file: "badminton.mp4" }
-    ];
+    // Example: user hobby
+    let hobby = "Badminton";   // ← This can come from your login/signup form
 
-    function generateScores() {
-      const hobby = document.getElementById("hobby").value.trim().toLowerCase();
-      const container = document.getElementById("games");
-      container.innerHTML = "";
+    const scores = {
+      "Kabaddi": 85,
+      "Kho-Kho": 70,
+      "Cricket": 95,
+      "Volleyball": 78,
+      "Badminton": 88,
+      "Football": 90
+    };
 
-      const match = sports.find(s => s.name.toLowerCase() === hobby);
+    const videos = {
+      "Kabaddi": "kabaddi.mp4",
+      "Kho-Kho": "khokho.mp4",
+      "Cricket": "cricket.mp4",
+      "Volleyball": "volleyball.mp4",
+      "Badminton": "badminton.mp4",  // 👈 your uploaded file
+      "Football": "football.mp4"
+    };
 
-      if (match) {
-        const score = Math.floor(Math.random() * 101);
-        let remark = "";
-        if (score > 90) remark = "🌟 Perfect!";
-        else if (score > 75) remark = "🔥 Awesome!";
-        else if (score > 60) remark = "💯 Excellent!";
-        else if (score > 45) remark = "👍 Good";
-        else remark = "❌ Loss";
-
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <h3>${match.name}</h3>
-          <video src="${match.file}" controls width="300"></video>
-          <div class="score">Score: ${score}</div>
-          <div class="remark">${remark}</div>
-        `;
-        container.appendChild(card);
-      } else {
-        container.innerHTML = `<p style="color:red">No video found for hobby: ${hobby}</p>`;
+    // Show only selected hobby
+    document.querySelectorAll("table tr").forEach((row, idx) => {
+      if (idx !== 0) { // skip header
+        if (!row.cells[0].innerText.includes(hobby)) {
+          row.style.display = "none";
+        }
       }
-    }
+    });
+
+    // Set video
+    const videoEl = document.getElementById("sportVideo");
+    videoEl.src = videos[hobby];
+
+    // Score feedback
+    const score = scores[hobby];
+    const resultText = document.getElementById("resultText");
+
+    if (score >= 90) resultText.innerText = "🔥 Excellent!";
+    else if (score >= 80) resultText.innerText = "✨ Awesome!";
+    else if (score >= 70) resultText.innerText = "👍 Good!";
+    else resultText.innerText = "😔 Loss, try again!";
   </script>
 </body>
 </html>
