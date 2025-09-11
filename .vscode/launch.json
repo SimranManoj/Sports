@@ -13,3 +13,82 @@
         }
     ]
 }             
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sports Talent Scoreboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg,#f3f4f6,#eef2ff);
+      margin: 0;
+      padding: 20px;
+    }
+    h1 { text-align: center; color: #3b82f6; }
+    .games { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 20px; margin-top: 20px; }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    video { width: 100%; border-radius: 10px; }
+    .score { font-weight: bold; margin-top: 6px; }
+    .remark { margin-top: 4px; color: #0f172a; }
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #3b82f6;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sports Talent Scoreboard</h1>
+  <button onclick="generateScores()">🎯 Generate Scores</button>
+  <div class="games" id="games"></div>
+
+  <script>
+    const sports = [
+      {name: "Football", file: "football.mp4"},
+      {name: "Cricket", file: "cricket.mp4"},
+      {name: "Running", file: "running.mp4"},
+      {name: "Basketball", file: "basketball.mp4"},
+      {name: "Badminton", file: "badminton.mp4"},
+      {name: "Kabaddi", file: "kabaddi.mp4"},
+      {name: "Kho-Kho", file: "khokho.mp4"}
+    ];
+
+    function generateScores(){
+      const container = document.getElementById("games");
+      container.innerHTML = "";
+      sports.forEach(sport=>{
+        const score = Math.floor(Math.random()*101); // 0-100
+        let remark = "";
+        if(score>90) remark="🌟 Perfect!";
+        else if(score>75) remark="🔥 Awesome!";
+        else if(score>60) remark="💯 Excellent!";
+        else if(score>45) remark="👍 Good";
+        else remark="❌ Loss";
+
+        const card = document.createElement("div");
+        card.className="card";
+        card.innerHTML=`
+          <h3>${sport.name}</h3>
+          <video src="${sport.file}" controls></video>
+          <div class="score">Score: ${score}</div>
+          <div class="remark">${remark}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
